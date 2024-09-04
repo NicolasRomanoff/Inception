@@ -1,0 +1,6 @@
+services:
+  nginx:
+    build: requirements/nginx/Dockerfile
+    ports:
+      - "8080:443"
+    restart: always
