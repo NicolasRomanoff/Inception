@@ -1,16 +1,24 @@
 
-all :
-	docker-compose -f ./srcs/docker-compose.yml up
+all: 
+	mkdir -p /home/niromano/data/mariadb
+	mkdir -p /home/niromano/data/wordpress
+	docker compose -f ./srcs/docker-compose.yml build
+	docker compose -f ./srcs/docker-compose.yml up -d
 
-status :
-	docker-compose -f ./srcs/docker-compose.yml ps
+logs:
+	docker logs wordpress
+	docker logs mariadb
+	docker logs nginx
 
-logs :
-	docker-compose -f ./srcs/docker-compose.yml logs --tail 5
+clean:
+	docker container stop nginx mariadb wordpress
+	docker network rm inception
 
-clean :
-	docker-compose -f ./srcs/docker-compose.yml stop
-	docker-compose -f ./srcs/docker-compose.yml down
+fclean: clean
+	@sudo rm -rf /home/niromano/data/mariadb/*
+	@sudo rm -rf /home/niromano/data/wordpress/*
+	@docker system prune -af
 
-config :
-	docker-compose -f ./srcs/docker-compose.yml config
+re : fclean all
+
+.Phony: all logs clean fclean
